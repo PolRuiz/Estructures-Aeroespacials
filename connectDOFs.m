@@ -12,6 +12,7 @@ function Td = connectDOFs(n_el,n_nod,n_i,Tn)
 %            Td(e,i) - DOF i associated to element e
 %--------------------------------------------------------------------------
 % Hint: Use the relation between the DOFs numbering and nodal numbering.
+%prova
 
 Td = zeros(n_el, n_nod*n_i);
 
