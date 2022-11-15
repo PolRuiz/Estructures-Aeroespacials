@@ -112,7 +112,7 @@ KG = stiffnessComputer.obtainStiffnessMatrix();
 [vL,vR,uR] = applyCond(n_i,n_dof,fixNod);
 
 % System resolution
-solverType = 'Iterative';
+solverType = 'Iterative'; %'Iterative' or 'Direct'
 [uL,u,R] = solveSys(vL,vR,uR,KG,Fext,solverType);
 
 % Compute strain and stresses
