@@ -1,4 +1,4 @@
-function [u,R] = solveSys(vL,vR,uR,KG,Fext)
+function [uL,u,R] = solveSys(vL,vR,uR,KG,Fext,solverType)
 %--------------------------------------------------------------------------
 % The function takes as inputs:
 %   - vL      Free degree of freedom vector
@@ -26,8 +26,12 @@ FEXT_R=Fext(vR,1);
 u=zeros(size(Fext,1),1);
 R=zeros(size(Fext,1),1);
 
+LHS = KLL;
+RHS = FEXT_L-KLR*uR;
 
-uL=inv(KLL)*(FEXT_L-KLR*uR);
+type = Solver.selectSolver(solverType);
+uL = type.systSolve(LHS,RHS);
+
 RR=KRR*uR+KRL*uL-FEXT_R;
 
 u(vL,1)=uL;
