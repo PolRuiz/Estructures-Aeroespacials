@@ -4,7 +4,7 @@
 % Date: 09/03/2022
 % Author/s: Albert Servitje Roca i Pol Ruiz Celada
 %
-
+clc;
 clear;
 close all;
 
@@ -100,8 +100,8 @@ Kel = computeKelBar(n_d,n_el,x,Tn,mat,Tmat);
 % Global matrix assembly
 % KG = assemblyKG(n_el,n_el_dof,n_dof,Td,Kel);
 %%
-CM = GlobalStiffnessMatrixComputer(Kel,Tn,n,n_i);
-KG = CM.obtainStiffnessMatrix();
+stiffnessComputer = GlobalStiffnessMatrixComputer(Kel,Tn,n,n_i);
+KG = stiffnessComputer.obtainStiffnessMatrix();
 %%
 
 

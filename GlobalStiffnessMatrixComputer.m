@@ -18,14 +18,9 @@ classdef GlobalStiffnessMatrixComputer < handle
     
     methods (Access = public)
         function obj = GlobalStiffnessMatrixComputer(Kel,Tn,n,n_i)
-            %GLOBALSTIFFNESSMATRIXCOMPUTER Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.Kel = Kel;
-            obj.Tn  = Tn;
-            obj.n   = n;
-            obj.n_i = n_i;
+            obj.init(Kel,Tn,n,n_i);
             obj.compute_n();
-            obj.computeTd();            
+            obj.computeTd();
         end
         
         function kG = obtainStiffnessMatrix(obj)
@@ -36,6 +31,14 @@ classdef GlobalStiffnessMatrixComputer < handle
     end
     
     methods (Access = private)
+        
+        function init(obj,Kel,Tn,n,n_i)
+            obj.Kel = Kel;
+            obj.Tn  = Tn;
+            obj.n   = n;
+            obj.n_i = n_i;
+        end
+        
         function compute_n(obj)
             obj.n_el     = size(obj.Tn,1);
             obj.n_nod    = size(obj.Tn,2);
@@ -64,7 +67,7 @@ classdef GlobalStiffnessMatrixComputer < handle
                         obj.KG(I,J) = obj.KG(I,J) + obj.Kel(i,j,e);
                     end
                 end
-            end            
+            end
         end
     end
 end
