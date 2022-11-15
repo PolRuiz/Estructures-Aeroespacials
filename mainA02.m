@@ -98,7 +98,11 @@ Td = connectDOFs(n_el,n_nod,n_i,Tn);
 Kel = computeKelBar(n_d,n_el,x,Tn,mat,Tmat);
 
 % Global matrix assembly
-KG = assemblyKG(n_el,n_el_dof,n_dof,Td,Kel);
+% KG = assemblyKG(n_el,n_el_dof,n_dof,Td,Kel);
+%%
+CM = GlobalStiffnessMatrixComputer(Kel,Tn,n,n_i);
+KG = CM.obtainStiffnessMatrix();
+%%
 
 
 % Global force vector assembly
@@ -108,14 +112,14 @@ KG = assemblyKG(n_el,n_el_dof,n_dof,Td,Kel);
 [vL,vR,uR] = applyCond(n_i,n_dof,fixNod);
 
 % System resolution
-[u,R] = solveSys(vL,vR,uR,KG,Fext);
+solverType = 'Iterative';
+[uL,u,R] = solveSys(vL,vR,uR,KG,Fext,solverType);
 
 % Compute strain and stresses
 [eps,sig] = computeStrainStressBar(n_d,n_i,n_nod,n_el,u,Td,x,Tn,mat,Tmat);
 
 
 % Buckling
-
 [sig_cr] = buckling(n_d,n_el,x,mat,Tn,Tmat,sig);
 
 
