@@ -1,14 +1,14 @@
 classdef DirectSolver < Solver
     %Directly solve equation system
-    properties
-        %
-    end
     
-    methods (Static)
-        %no object constructor since we are using static methods
-        function result = systSolve(LHS,RHS)
-            result = LHS\RHS;
-            disp('Direct');
+    methods (Access = public)
+        function obj = DirectSolver(cParams)
+            obj.init(cParams);
+        end
+        
+        function result = solveSystem(obj)
+            result = obj.LHS\obj.RHS;
+            %disp('Direct');
         end
     end
 end

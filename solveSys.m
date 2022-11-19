@@ -29,8 +29,12 @@ R=zeros(size(Fext,1),1);
 LHS = KLL;
 RHS = FEXT_L-KLR*uR;
 
-type = Solver.selectSolver(solverType);
-uL = type.systSolve(LHS,RHS);
+s.type = solverType;
+s.RHS = RHS;
+s.LHS = LHS;
+
+solver = Solver.create(s);
+uL = solver.solve();
 
 RR=KRR*uR+KRL*uL-FEXT_R;
 

@@ -1,13 +1,14 @@
 classdef IterativeSolver < Solver
-    %Iteratively solve equation system using pcg function    
-    properties
-        %
-    end
+    %Iteratively solve equation system using pcg function
     
-    methods (Static)
-        function result = systSolve(LHS,RHS)
-            result = pcg(LHS,RHS,[],100);
-            disp('Iterative');
+    methods (Access = public)
+        function obj = IterativeSolver(cParams)
+            obj.init(cParams);
+        end
+        
+        function result = solveSystem(obj)
+            result = pcg(obj.LHS,obj.RHS,[],100);
+            %disp('Iterative');
         end
     end
 end
