@@ -7,7 +7,7 @@ classdef IterativeSolver < Solver
         end
         
         function result = solveSystem(obj)
-            result = pcg(obj.LHS,obj.RHS,[],100);
+            result = pcg(obj.LHS,obj.RHS,[1e-13],100);
             %disp('Iterative');
         end
     end
