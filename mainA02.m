@@ -128,3 +128,6 @@ solverType = 'Direct'; %'Iterative' or 'Direct'
 % Plot deformed structure with stress of each bar
 scale = 30; % Adjust this parameter for properly visualizing the deformation
 plotBarStress3D(x,Tn,u,sig,scale);
+
+%% TESTS
+runtests('tests.m')
