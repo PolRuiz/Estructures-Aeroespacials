@@ -1,4 +1,4 @@
-function [Fext,aX,aZ] = computeF(n_d,n_el,n_dof,W,H,D1,d1,D2,x,Tmat,mat,Tn,n,Wm,AeroM)
+function [Fext,aX,aZ] = computeF(n_d,n_el,n_dof,problem,n,Wm,AeroM)
 %--------------------------------------------------------------------------
 % The function takes as inputs:
 %   - Dimensions:  n_i         Number of DOFs per node
@@ -14,6 +14,19 @@ function [Fext,aX,aZ] = computeF(n_d,n_el,n_dof,W,H,D1,d1,D2,x,Tmat,mat,Tn,n,Wm,
 %--------------------------------------------------------------------------
 % Hint: Use the relation between the DOFs numbering and nodal numbering to
 % determine at which DOF in the global system each force is applied.
+
+W = problem.geometricalData.W;
+H = problem.geometricalData.H;
+D1 = problem.geometricalData.D1;
+d1 = problem.geometricalData.d1;
+D2 = problem.geometricalData.D2;
+
+x = problem.preprocessData.coor;
+Tmat = problem.preprocessData.matConnec;
+mat = problem.preprocessData.matProp;
+Tn = problem.preprocessData.nodalConnec;
+
+
 F_ext=zeros(n_dof,1);
 
 
