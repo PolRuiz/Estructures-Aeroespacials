@@ -1,4 +1,4 @@
-function [uL,u,R] = solveSys(vL,vR,uR,KG,Fext,solverType)
+function [uL,u,R] = solveSys(trussStructure, KG, Fext, solverType)
 %--------------------------------------------------------------------------
 % The function takes as inputs:
 %   - vL      Free degree of freedom vector
@@ -15,6 +15,10 @@ function [uL,u,R] = solveSys(vL,vR,uR,KG,Fext,solverType)
 %   - R       Global reactions vector [n_dof x 1]
 %              R(I) - Total reaction acting on global DOF I
 %--------------------------------------------------------------------------
+
+vL = trussStructure.vectorialData.vL;
+vR = trussStructure.vectorialData.vR;
+uR = trussStructure.vectorialData.uR;
 
 KLL=KG(vL,vL);
 KLR=KG(vL,vR);
@@ -43,6 +47,4 @@ u(vR,1)=uR;
 
 R(vL,1)=0;
 R(vR,1)=RR;
-
-
 end
