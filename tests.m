@@ -47,7 +47,7 @@ classdef tests < matlab.unittest.TestCase
             
             c = GlobalForceComputer(s);
             actualValue = c.compute();
-            expectedValue = load('externalForce.mat').Fext;
+            expectedValue = load('externalForce.mat').externalForce;
             testCase.verifyEqual(actualValue,expectedValue);
         end
         
