@@ -6,8 +6,8 @@ classdef Solver < handle
     end
     
     methods (Access = public)
-        function uL = solve(obj)
-            uL = obj.solveSystem();
+        function [uL,RR] = solve(obj)
+            uL = obj.solveSystem();            
         end
     end
     
@@ -24,8 +24,8 @@ classdef Solver < handle
     
     methods (Access = protected)
         function init(obj,cParams)
-            obj.RHS = cParams.RHS;
-            obj.LHS = cParams.LHS;
+            obj.RHS = cParams.system.RHS;
+            obj.LHS = cParams.system.LHS;
         end
     end
     
