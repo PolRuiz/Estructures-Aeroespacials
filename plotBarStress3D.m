@@ -1,4 +1,4 @@
-function plotBarStress3D(trussStructure,scale)
+function plotBarStress3D(cParams,scale)
 % PLOTBARSTRESS3D function.
 % Inputs:                                           Type [Dimensions]
 % - x      Nodal coordinates matrix (in m)          matrix [ n    , nd   ]
@@ -8,10 +8,10 @@ function plotBarStress3D(trussStructure,scale)
 % - scale  Scale factor for the displacements       scalar
 
 % Precomputations
-x = trussStructure.preprocessData.coor;
-Tnod = trussStructure.preprocessData.nodalConnec;
-u = trussStructure.vectorialData.u;
-sig = trussStructure.resultData.stress;
+x = cParams.mesh.coor;
+Tnod = cParams.mesh.nodalConnec;
+u = cParams.u;
+sig = cParams.sig;
 
 nd = size(x,2);
 X = x(:,1);
