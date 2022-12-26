@@ -1,22 +1,26 @@
 classdef TrussStructure < handle
 
+    properties (Access = private)
+        parameters
+        geometricalData
+        mesh
+        materialData
+        fixNod
+        dimensionalData
+    end
+
     properties (Access = public)
+        DOFConnec
+        elementStiffness
+
         KG
         Fext
-        vectorialData
-        preprocessData
+        postprocessData
         resultData
-    end
 
-    properties (Access = private)
-        hangingMass
-        aeroMultiplier
-        geometricalData
-        dimensionalData
-        DOFConnec
-        elementStiffness 
-    end
+        problemDOFManager
 
+    end
 
     methods (Access = public)
 
@@ -24,123 +28,142 @@ classdef TrussStructure < handle
             obj.init(cParams);
         end
 
-        function createData(obj)
-            obj.createGeometry();
-            obj.computePreprocess();
-            obj.createDimensions();
-        end
-
-        function computeDOFConnectivity(obj)
-            s.preprocessData = obj.preprocessData; %no utilitzo tot
-            s.dimensionalData = obj.dimensionalData; %no utilitzo tot
-            c = DOFConnecter(s);
-            obj.DOFConnec = c.compute();
-        end
-
-        function computeElementStiffnes(obj)
-            s.preprocessData = obj.preprocessData; %no utilitzo tot
-            s.dimensionalData = obj.dimensionalData; %no utilitzo tot
-            c = ElementStiffnessComputer(s);
-            obj.elementStiffness = c.compute();
-        end
-
-        function computeStiffnessMatrix(obj)
-            s.preprocessData = obj.preprocessData; %no utilitzo tot
-            s.dimensionalData = obj.dimensionalData; %no utilitzo tot
-            s.Kel = obj.elementStiffness;
-            s.Td = obj.DOFConnec;
-            c = GlobalStiffnessMatrixComputer(s);
-            obj.KG = c.compute();
-        end
-
-        function computeGlobalForceVector(obj)
-            s.preprocessData = obj.preprocessData;
-            s.geometricalData = obj.geometricalData;
-            s.dimensionalData = obj.dimensionalData;
-            s.hangingMass = obj.hangingMass;
-            s.aeroMultiplier = obj.aeroMultiplier;
-            c = GlobalForceComputer(s);
-            obj.Fext = c.compute();
-        end
-
-        function applyBoundaryCond(obj)
-            fixNod = obj.preprocessData.fixNode;
-            n_dof = obj.dimensionalData.n_dof;
-
-            c=size(fixNod,1);
-            s.uR=fixNod(:,3);
-            s.vR=fixNod(:,2);
-            DOF=transpose(1:1:n_dof);
-            for k=1:n_dof
-                for j=1:c
-                    if DOF(k)==fixNod(j,2)
-                        DOF(k)=0;
-                    end
-                end
-            end
-            s.vL=nonzeros(DOF);
-            obj.vectorialData = s;
-        end
-
-        function computeStrainStress(obj, displacements, freeDisplacements)
-            obj.vectorialData.u = displacements;
-            obj.vectorialData.uL = freeDisplacements;
-
-            s.dimensionalData = obj.dimensionalData;
-            s.vectorialData = obj.vectorialData;
-            s.preprocessData = obj.preprocessData;
-            s.DOFConnec = obj.DOFConnec;
-
-            c = StrainStressComputer(s);
-            obj.resultData = c.compute();
+        function computeProblem(obj)
+            obj.computeDOFConnectivity();
+            obj.computeElementStiffnes();
+            obj.computeStiffnessMatrix();
+            obj.computeGlobalForceVector();
+            obj.createDOFManager();
+            obj.solveSystem();
+            obj.computeStrainStress();
+            obj.plotPostprocess();
         end
     end
 
     methods (Access = private)
 
-        function init(obj, cParams)
-            obj.hangingMass = cParams.Mass ; % mass hanging from bar
-            obj.aeroMultiplier = cParams.AeroM;
+
+        function computeDOFConnectivity(obj)
+            s.n_el = obj.dimensionalData.n_el;
+            s.n_nod = obj.dimensionalData.n_nod;
+            s.n_i = obj.dimensionalData.n_i;
+            s.Tn = obj.mesh.nodalConnec;
+            
+            c = DOFConnecter(s);
+            obj.DOFConnec = c.compute();
         end
 
-        function createGeometry(obj)
-            geo.H = 0.9;
-            geo.W = 0.85;
-            geo.B = 3.2;
-            geo.D1 = 18/1000;
-            geo.d1 = 7.5/1000;
-            geo.D2 = 3/1000;
-            obj.geometricalData = geo;
+        function computeElementStiffnes(obj)
+            s.n_d = obj.dimensionalData.n_d;
+            s.n_el = obj.dimensionalData.n_el;
+            s.mesh = obj.mesh;
+            s.materialData = obj.materialData;
+            
+            c = ElementStiffnessComputer(s);
+            obj.elementStiffness = c.compute();
         end
 
-        function computePreprocess(obj)
-            s.geometricalData = obj.geometricalData;
-            c = PreprocessComputer(s);
-            obj.preprocessData = c.compute();
+        function computeStiffnessMatrix(obj)
+
+            s.n_dof = obj.dimensionalData.n_dof;
+            s.n_el = obj.dimensionalData.n_el;
+            s.n_el_dof = obj.dimensionalData.n_el_dof;
+
+            s.Tn = obj.mesh.nodalConnec;            
+            s.Kel = obj.elementStiffness;
+            s.Td = obj.DOFConnec;
+
+            c = GlobalStiffnessMatrixComputer(s);
+            obj.KG = c.compute();             
         end
 
-        function createDimensions(obj)
-            dim.n_d = size(obj.preprocessData.coor,2);              % Number of dimensions
-            dim.n_i = dim.n_d;                                          % Number of DOFs for each node
-            dim.n = size(obj.preprocessData.coor,1);                % Total number of nodes
-            dim.n_dof = dim.n_i*dim.n;                                      % Total number of degrees of freedom
-            dim.n_el = size(obj.preprocessData.nodalConnec,1);      % Total number of elements
-            dim.n_nod = size(obj.preprocessData.nodalConnec,2);     % Number of nodes for each element
-            dim.n_el_dof = dim.n_i*dim.n_nod;                               % Number of DOFs for each element
-            obj.dimensionalData = dim;
+        function computeGlobalForceVector(obj)
+            s.mesh = obj.mesh;
+            s.materialData = obj.materialData;
+            
+            s.W = obj.geometricalData.W;
+            s.H = obj.geometricalData.H;
+            s.D1 = obj.geometricalData.D1;
+            s.d1 = obj.geometricalData.d1;
+            s.D2 = obj.geometricalData.D2;
+            
+            s.n = obj.dimensionalData.n;
+            s.n_d = obj.dimensionalData.n_d;
+            s.n_el = obj.dimensionalData.n_el;
+            s.n_dof = obj.dimensionalData.n_dof;
+            
+            s.Wm = obj.parameters.hangingMass;
+            s.AeroM = obj.parameters.aeroMultiplier;
+            
+            c = GlobalForceComputer(s);
+            obj.Fext = c.compute();
         end
 
-%         function solveSystem(obj)
-%             %DOFManager
-%         end
+        function createDOFManager(obj)
+            s.fixNod = obj.fixNod;
+            s.n_dof = obj.dimensionalData.n_dof;
+            obj.problemDOFManager = DOFManager(s);
+        end
+
+        function solveSystem(obj)
+            solverType = 'Direct';
+            newMatrices = obj.problemDOFManager.splitMatrix(obj.KG);
+            newVectors = obj.problemDOFManager.splitVector(obj.Fext);
+
+            s.type = solverType;
+            s.system = obj.problemDOFManager.constructSystem(newMatrices,newVectors);
+
+            solver = Solver.create(s);
+
+            uL = solver.solve();
+            uR = obj.problemDOFManager.uR;
+            RR = newMatrices.matRR*uR+newMatrices.matRL*uL-newVectors.vecR;
 
 
+            sol.displacements = obj.problemDOFManager.joinVector(uL,uR);
+            sol.reactions = obj.problemDOFManager.joinVector(0,RR);
 
+            obj.resultData = sol;
+        end
+
+        function computeStrainStress(obj)
+            s.n_d = obj.dimensionalData.n_d;
+            s.n_i = obj.dimensionalData.n_i;
+            s.n_nod = obj.dimensionalData.n_nod;
+            s.n_el = obj.dimensionalData.n_el;
+            
+            s.mesh = obj.mesh;
+            s.materialData = obj.materialData;
+            
+            s.DOFConnec = obj.DOFConnec;
+            s.u = obj.resultData.displacements;
+            
+            c = StrainStressComputer(s);
+            obj.postprocessData = c.compute();
+        end
+
+        function plotPostprocess(obj)
+            % Plot deformed structure with stress of each bar
+            scale = 30; % Adjust this parameter for properly visualizing the deformation
+            s.mesh = obj.mesh;
+            s.u = obj.resultData.displacements;
+            s.sig = obj.postprocessData.stress;            
+            plotBarStress3D(s,scale);
+        end
 
     end
 
+    methods (Access = private)
 
+        function init(obj, cParams)
+            obj.parameters = cParams.parameters ; % mass hanging from bar
+            obj.geometricalData = cParams.geometricalData;
+            obj.mesh = cParams.mesh;
+            obj.materialData = cParams.materialData;
+            obj.fixNod = cParams.fixNod;
+            obj.dimensionalData = cParams.dimensionalData;
+        end
 
-
+    end
 
 end
