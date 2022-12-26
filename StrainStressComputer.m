@@ -89,18 +89,18 @@ classdef StrainStressComputer < handle
     methods (Access = private)
 
         function init(obj, cParams)
-            obj.n_d = cParams.dimensionalData.n_d;
-            obj.n_i = cParams.dimensionalData.n_i;
-            obj.n_nod = cParams.dimensionalData.n_nod;
-            obj.n_el = cParams.dimensionalData.n_el;
+            obj.n_d = cParams.n_d;
+            obj.n_i = cParams.n_i;
+            obj.n_nod = cParams.n_nod;
+            obj.n_el = cParams.n_el;
 
-            obj.u = cParams.vectorialData.u;
+            obj.u = cParams.u;
             obj.Td = cParams.DOFConnec;
 
-            obj.x = cParams.preprocessData.coor;
-            obj.Tn = cParams.preprocessData.nodalConnec;
-            obj.mat = cParams.preprocessData.matProp;
-            obj.Tmat = cParams.preprocessData.matConnec;
+            obj.x = cParams.mesh.coor;
+            obj.Tn = cParams.mesh.nodalConnec;
+            obj.mat = cParams.materialData.matProp;
+            obj.Tmat = cParams.materialData.matConnec;
 
         end
 

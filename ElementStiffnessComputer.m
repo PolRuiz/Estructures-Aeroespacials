@@ -71,12 +71,12 @@ classdef ElementStiffnessComputer < handle
     methods (Access = private)
 
         function init(obj, cParams)
-            obj.n_d = cParams.dimensionalData.n_d;
-            obj.n_el = cParams.dimensionalData.n_el;
-            obj.x = cParams.preprocessData.coor;
-            obj.Tn = cParams.preprocessData.nodalConnec;
-            obj.mat = cParams.preprocessData.matProp;
-            obj.Tmat = cParams.preprocessData.matConnec;
+            obj.n_d = cParams.n_d;
+            obj.n_el = cParams.n_el;
+            obj.x = cParams.mesh.coor;
+            obj.Tn = cParams.mesh.nodalConnec;
+            obj.mat = cParams.materialData.matProp;
+            obj.Tmat = cParams.materialData.matConnec;
         end
 
     end

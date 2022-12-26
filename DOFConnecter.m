@@ -34,10 +34,10 @@ classdef DOFConnecter < handle
     methods (Access = private)
 
         function init(obj, cParams)
-            obj.n_el = cParams.dimensionalData.n_el;
-            obj.n_nod = cParams.dimensionalData.n_nod;
-            obj.n_i = cParams.dimensionalData.n_i;
-            obj.Tn = cParams.preprocessData.nodalConnec;
+            obj.n_el = cParams.n_el;
+            obj.n_nod = cParams.n_nod;
+            obj.n_i = cParams.n_i;
+            obj.Tn = cParams.Tn;
         end
 
     end

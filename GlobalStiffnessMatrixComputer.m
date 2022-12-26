@@ -5,6 +5,7 @@ classdef GlobalStiffnessMatrixComputer < handle
 
     properties (Access = private)
         KG
+        
         Kel
         Td
         Tn
@@ -30,11 +31,11 @@ classdef GlobalStiffnessMatrixComputer < handle
         function init(obj, cParams)
             obj.Kel = cParams.Kel;
             obj.Td = cParams.Td;
-            obj.Tn  = cParams.preprocessData.nodalConnec;
+            obj.Tn  = cParams.Tn;
 
-            obj.n_dof = cParams.dimensionalData.n_dof;
-            obj.n_el = cParams.dimensionalData.n_el;
-            obj.n_el_dof = cParams.dimensionalData.n_el_dof;
+            obj.n_dof = cParams.n_dof;
+            obj.n_el = cParams.n_el;
+            obj.n_el_dof = cParams.n_el_dof;
         end
 
 
