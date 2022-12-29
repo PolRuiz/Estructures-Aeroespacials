@@ -15,6 +15,7 @@ classdef TrussStructure < handle
 
         KG
         Fext
+        
         postprocessData
         resultData
 
