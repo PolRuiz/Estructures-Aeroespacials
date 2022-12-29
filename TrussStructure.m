@@ -9,7 +9,7 @@ classdef TrussStructure < handle
         dimensionalData
     end
 
-    properties (Access = public)
+    properties (Access = private)
         DOFConnec
         elementStiffness
 
@@ -116,7 +116,7 @@ classdef TrussStructure < handle
             solver = Solver.create(s);
 
             uL = solver.solve();
-            uR = obj.problemDOFManager.uR;
+            uR = obj.fixNod(:,3);
             RR = newMatrices.matRR*uR+newMatrices.matRL*uL-newVectors.vecR;
 
 

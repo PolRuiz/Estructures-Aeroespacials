@@ -1,6 +1,6 @@
 classdef DataCreator < handle
     
-    properties (Access = public)
+    properties (Access = private)
         geometricalData
         mesh
         materialData

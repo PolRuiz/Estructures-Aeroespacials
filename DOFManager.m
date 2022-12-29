@@ -1,13 +1,12 @@
 classdef DOFManager < handle
-    properties (Access = public)
-        uR
-    end
+
 
     properties (Access = private)
         fixNod
         n_dof        
         vR
         vL
+        uR
     end
 
     methods (Access = public)
@@ -58,18 +57,18 @@ classdef DOFManager < handle
         end
 
         function createVectors(obj)
-            c=size(obj.fixNod,1);
-            obj.uR=obj.fixNod(:,3);
-            obj.vR=obj.fixNod(:,2);
-            DOF=transpose(1:1:obj.n_dof);
-            for k=1:obj.n_dof
-                for j=1:c
-                    if DOF(k)==obj.fixNod(j,2)
-                        DOF(k)=0;
+            c = size(obj.fixNod,1);
+            obj.uR = obj.fixNod(:,3);
+            obj.vR = obj.fixNod(:,2);
+            DOF = transpose(1:1:obj.n_dof);
+            for k = 1:obj.n_dof
+                for j = 1:c
+                    if DOF(k) == obj.fixNod(j,2)
+                        DOF(k) = 0;
                     end
                 end
             end
-            obj.vL=nonzeros(DOF);
+            obj.vL = nonzeros(DOF);
 
         end
 
