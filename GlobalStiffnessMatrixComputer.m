@@ -1,7 +1,4 @@
 classdef GlobalStiffnessMatrixComputer < handle
-    %   This class is used to compute the Global Stiffnes Matrix of a system
-    %   The arguments are going to be the Kel, Tn, n (number of nodes) and n_i (DOF per node)
-
 
     properties (Access = private)
         KG

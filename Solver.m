@@ -6,7 +6,7 @@ classdef Solver < handle
     end
     
     methods (Access = public)
-        function [uL,RR] = solve(obj)
+        function uL = solve(obj)
             uL = obj.solveSystem();            
         end
     end

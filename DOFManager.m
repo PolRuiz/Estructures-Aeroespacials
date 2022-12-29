@@ -1,6 +1,5 @@
 classdef DOFManager < handle
 
-
     properties (Access = private)
         fixNod
         n_dof        
@@ -17,22 +16,17 @@ classdef DOFManager < handle
         end
 
         function newMatrices = splitMatrix(obj,matrix)
-
             s.matLL = matrix(obj.vL,obj.vL);
             s.matLR = matrix(obj.vL,obj.vR);
             s.matRL = matrix(obj.vR,obj.vL);
             s.matRR = matrix(obj.vR,obj.vR);
-
             newMatrices = s;
         end
 
         function newVector = splitVector(obj,vector)
-
             s.vecL = vector(obj.vL,1);
             s.vecR = vector(obj.vR,1);
-
             newVector = s;
-
         end
 
         function newVector = joinVector(obj, freeResult, fixedResult)

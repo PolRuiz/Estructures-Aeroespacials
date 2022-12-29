@@ -26,8 +26,8 @@ classdef GlobalForceComputer < handle
         end
         
         function Fext = compute(obj)            
-            [wVec, Ptotal] = obj.computeNodalWeight();            
-            coordCOM = obj.computeCenterOfMass(wVec, Ptotal);            
+            [wVec, Ptotal]  = obj.computeNodalWeight();            
+            coordCOM        = obj.computeCenterOfMass(wVec, Ptotal);            
             [aeroF, aeroFp] = obj.computeAeroForces(wVec, Ptotal, coordCOM);            
             aZ = obj.computeAccelerations(aeroFp,Ptotal);            
             Fext = obj.computeForces(aeroF,aeroFp,wVec,aZ);

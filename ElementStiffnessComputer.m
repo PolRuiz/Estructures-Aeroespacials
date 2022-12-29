@@ -36,28 +36,36 @@ classdef ElementStiffnessComputer < handle
             Kel = zeros(n_el_dof, n_el_dof,obj.n_el);
             l = zeros(obj.n_el,1);
 
-            for e=1:obj.n_el
-                E = obj.mat(obj.Tmat(e),1);
-                A = obj.mat(obj.Tmat(e),2);
-                x1(e) = obj.x(obj.Tn(e,1),1);
-                y1(e) = obj.x(obj.Tn(e,1),2);
-                z1(e) = obj.x(obj.Tn(e,1),3);
-                x2(e) = obj.x(obj.Tn(e,2),1);
-                y2(e) = obj.x(obj.Tn(e,2),2);
-                z2(e) = obj.x(obj.Tn(e,2),3);
+            for iElem=1:obj.n_el
+
+                obj.computeCoord(iElem)
+                obj.computeLength()                
+                obj.computeElementalStiffnessMatrix()
+                obj.rotateElementalStiffnessMatrix()
+                Ke(:,:,iElem) = obj.Kelem;
+            end
+
+                E = obj.mat(obj.Tmat(iElem),1);
+                A = obj.mat(obj.Tmat(iElem),2);
+                x1(iElem) = obj.x(obj.Tn(iElem,1),1);
+                y1(iElem) = obj.x(obj.Tn(iElem,1),2);
+                z1(iElem) = obj.x(obj.Tn(iElem,1),3);
+                x2(iElem) = obj.x(obj.Tn(iElem,2),1);
+                y2(iElem) = obj.x(obj.Tn(iElem,2),2);
+                z2(iElem) = obj.x(obj.Tn(iElem,2),3);
 
 
-                l(e) = sqrt((x2(e)-x1(e))^2 + (y2(e)-y1(e))^2+(z2(e)-z1(e))^2);
+                l(iElem) = sqrt((x2(iElem)-x1(iElem))^2 + (y2(iElem)-y1(iElem))^2+(z2(iElem)-z1(iElem))^2);
 
-                Re = 1/l(e)*[x2(e)-x1(e) y2(e)-y1(e) z2(e)-z1(e) 0 0 0;
-                    0 0 0 x2(e)-x1(e) y2(e)-y1(e) z2(e)-z1(e)];
+                Re = 1/l(iElem)*[x2(iElem)-x1(iElem) y2(iElem)-y1(iElem) z2(iElem)-z1(iElem) 0 0 0;
+                    0 0 0 x2(iElem)-x1(iElem) y2(iElem)-y1(iElem) z2(iElem)-z1(iElem)];
 
 
-                Kep = (A*E)/l(e)*[1 -1;-1 1];
+                Kep = (A*E)/l(iElem)*[1 -1;-1 1];
 
                 Ke = transpose(Re)*Kep*Re;
 
-                Kel(:,:,e) = Ke(:,:);
+                Kel(:,:,iElem) = Ke(:,:);
             end
 
             elementStiffness = Kel;

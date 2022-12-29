@@ -13,12 +13,12 @@ classdef TrussStructure < handle
         DOFConnec
         elementStiffness
 
-        KG
-        Fext
+        StiffnessMatrix
+        ExternalForces
         
         postprocessData
-        resultData
-
+        reactions
+        displacements
         problemDOFManager
 
     end
@@ -75,29 +75,29 @@ classdef TrussStructure < handle
             s.Td = obj.DOFConnec;
 
             c = GlobalStiffnessMatrixComputer(s);
-            obj.KG = c.compute();             
+            obj.StiffnessMatrix = c.compute();             
         end
 
         function computeGlobalForceVector(obj)
             s.mesh = obj.mesh;
             s.materialData = obj.materialData;
             
-            s.W = obj.geometricalData.W;
-            s.H = obj.geometricalData.H;
-            s.D1 = obj.geometricalData.D1;
-            s.d1 = obj.geometricalData.d1;
-            s.D2 = obj.geometricalData.D2;
-            
-            s.n = obj.dimensionalData.n;
-            s.n_d = obj.dimensionalData.n_d;
-            s.n_el = obj.dimensionalData.n_el;
+            gD = obj.geometricalData;
+            s.W  = gD.W;
+            s.H  = gD.H;
+            s.D1 = gD.D1;
+            s.d1 = gD.d1;
+            s.D2 = gD.D2;            
+            s.n     = obj.dimensionalData.n;
+            s.n_d   = obj.dimensionalData.n_d;
+            s.n_el  = obj.dimensionalData.n_el;
             s.n_dof = obj.dimensionalData.n_dof;
             
-            s.Wm = obj.parameters.hangingMass;
+            s.Wm    = obj.parameters.hangingMass;
             s.AeroM = obj.parameters.aeroMultiplier;
             
             c = GlobalForceComputer(s);
-            obj.Fext = c.compute();
+            obj.ExternalForces = c.compute();
         end
 
         function createDOFManager(obj)
@@ -108,8 +108,8 @@ classdef TrussStructure < handle
 
         function solveSystem(obj)
             solverType = 'Direct';
-            newMatrices = obj.problemDOFManager.splitMatrix(obj.KG);
-            newVectors = obj.problemDOFManager.splitVector(obj.Fext);
+            newMatrices = obj.problemDOFManager.splitMatrix(obj.StiffnessMatrix);
+            newVectors = obj.problemDOFManager.splitVector(obj.ExternalForces);
 
             s.type = solverType;
             s.system = obj.problemDOFManager.constructSystem(newMatrices,newVectors);
@@ -128,14 +128,12 @@ classdef TrussStructure < handle
         end
 
         function computeStrainStress(obj)
-            s.n_d = obj.dimensionalData.n_d;
-            s.n_i = obj.dimensionalData.n_i;
+            s.n_d   = obj.dimensionalData.n_d;
+            s.n_i   = obj.dimensionalData.n_i;
             s.n_nod = obj.dimensionalData.n_nod;
-            s.n_el = obj.dimensionalData.n_el;
-            
+            s.n_el  = obj.dimensionalData.n_el;             
             s.mesh = obj.mesh;
-            s.materialData = obj.materialData;
-            
+            s.materialData = obj.materialData;            
             s.DOFConnec = obj.DOFConnec;
             s.u = obj.resultData.displacements;
             
