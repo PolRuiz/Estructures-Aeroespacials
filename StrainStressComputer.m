@@ -23,7 +23,7 @@ classdef StrainStressComputer < handle
             obj.init(cParams)
         end
 
-        function resultData = compute(obj)
+        function postprocessData = compute(obj)
             c=size(obj.Td,2);
             n_el_dof=obj.n_d*obj.n_nod;
 
@@ -79,8 +79,8 @@ classdef StrainStressComputer < handle
                 sig(e,1) = E*eps(e,1);
             end
 
-            resultData.strain = eps;
-            resultData.stress = sig;
+            postprocessData.strain = eps;
+            postprocessData.stress = sig;
         end
     end
 
