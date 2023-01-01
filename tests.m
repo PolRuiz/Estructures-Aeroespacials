@@ -33,7 +33,7 @@ classdef tests < matlab.unittest.TestCase
             s.materialData = load('materialData.mat').materialData;
             
             parameters = load('parameters.mat').parameters;
-            s.Wm = parameters.hangingMass;
+            s.hMass = parameters.hangingMass;
             s.AeroM = parameters.aeroMultiplier;
             
             gD = load('geometricalData.mat').geometricalData;

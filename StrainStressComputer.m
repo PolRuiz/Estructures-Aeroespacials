@@ -95,12 +95,12 @@ classdef StrainStressComputer < handle
             obj.n_el = cParams.n_el;
 
             obj.u = cParams.u;
-            obj.Td = cParams.DOFConnec;
+            obj.Td = cParams.Td;
 
             obj.x = cParams.mesh.coor;
             obj.Tn = cParams.mesh.nodalConnec;
-            obj.mat = cParams.materialData.matProp;
-            obj.Tmat = cParams.materialData.matConnec;
+            obj.mat = cParams.mData.matProp;
+            obj.Tmat = cParams.mData.matConnec;
 
         end
 

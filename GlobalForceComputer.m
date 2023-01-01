@@ -9,7 +9,7 @@ classdef GlobalForceComputer < handle
         Tn
         mat
         Tmat
-        Wm
+        hMass
         AeroM
         
         W
@@ -46,8 +46,7 @@ classdef GlobalForceComputer < handle
             obj.Tn = cParams.mesh.nodalConnec;
             obj.mat = cParams.materialData.matProp;
             obj.Tmat = cParams.materialData.matConnec;
-            
-            obj.Wm = 9.81*cParams.Wm;
+            obj.hMass = 9.81*cParams.hMass;
             obj.AeroM = cParams.AeroM;
             
             obj.W = cParams.W;
@@ -101,8 +100,8 @@ classdef GlobalForceComputer < handle
                 M_PES_7 = M_PES_7 + wVec(3*i)*(obj.x(7,1) - obj.x(i,1));
             end
             
-            aeroF.L = obj.Wm+Ptotal;
-            aeroF.T = (obj.Wm*obj.W+2/5*aeroF.L*obj.W+M_PES_7)/obj.H;
+            aeroF.L = obj.hMass+Ptotal;
+            aeroF.T = (obj.hMass*obj.W+2/5*aeroF.L*obj.W+M_PES_7)/obj.H;
             aeroF.D = aeroF.T;
             
             aeroFp.L = aeroF.L*obj.AeroM;
@@ -118,8 +117,8 @@ classdef GlobalForceComputer < handle
             sumZ=0;
             
             massVec=-wVec/9.81;            
-            massVec(3)=massVec(3)+obj.Wm/(2*9.81);
-            massVec(6)=massVec(6)+obj.Wm/(2*9.81);
+            massVec(3)=massVec(3)+obj.hMass/(2*9.81);
+            massVec(6)=massVec(6)+obj.hMass/(2*9.81);
             
             for i=1:obj.n
                 sumX=sumX+obj.x(i,1)*massVec(3*i);
@@ -127,14 +126,14 @@ classdef GlobalForceComputer < handle
                 sumZ=sumZ+obj.x(i,3)*massVec(3*i);
             end
             
-            COM(1)=sumX/(mTotal+obj.Wm/9.81);
-            COM(2)=sumY/(mTotal+obj.Wm/9.81);
-            COM(3)=sumZ/(mTotal+obj.Wm/9.81);
+            COM(1)=sumX/(mTotal+obj.hMass/9.81);
+            COM(2)=sumY/(mTotal+obj.hMass/9.81);
+            COM(3)=sumZ/(mTotal+obj.hMass/9.81);
         end
         
         function aZ = computeAccelerations(obj, aeroFp, Ptotal)
             mTotal = Ptotal;
-            aZ=(aeroFp.L-obj.Wm-Ptotal)/(mTotal+obj.Wm/9.81);
+            aZ=(aeroFp.L-obj.hMass-Ptotal)/(mTotal+obj.hMass/9.81);
         end
         
         function Fext = computeForces(obj, aeroF, aeroFp, wVec, aZ)
@@ -151,7 +150,7 @@ classdef GlobalForceComputer < handle
                 aero = aeroFp;
             end
             
-            Fdata = [1 1 aero.T/2 ; 2 4 aero.T/2 ; 1 3 -obj.Wm/2 ; 2 6 -obj.Wm/2 ; 7 21 aero.L/5 ; 3 9 aero.L/5 ; 4 12 aero.L/5 ; 5 15 aero.L/5 ; 6 18 aero.L/5 ;
+            Fdata = [1 1 aero.T/2 ; 2 4 aero.T/2 ; 1 3 -obj.hMass/2 ; 2 6 -obj.hMass/2 ; 7 21 aero.L/5 ; 3 9 aero.L/5 ; 4 12 aero.L/5 ; 5 15 aero.L/5 ; 6 18 aero.L/5 ;
                     7 19 -aero.D/5 ; 3 7 -aero.D/5 ; 4 10 -aero.D/5 ; 5 13 -aero.D/5 ; 6 16 -aero.D/5];
             
             c=size(Fdata,1);
