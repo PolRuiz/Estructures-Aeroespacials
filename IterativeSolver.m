@@ -1,6 +1,4 @@
-classdef IterativeSolver < Solver
-    %Iteratively solve equation system using pcg function
-    
+classdef IterativeSolver < Solver    
     methods (Access = public)
         function obj = IterativeSolver(cParams)
             obj.init(cParams);
@@ -8,7 +6,6 @@ classdef IterativeSolver < Solver
         
         function result = solveSystem(obj)
             result = pcg(obj.LHS,obj.RHS,[1e-13],100);
-            %disp('Iterative');
         end
     end
 end

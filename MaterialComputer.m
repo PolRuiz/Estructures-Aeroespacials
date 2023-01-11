@@ -29,7 +29,6 @@ classdef MaterialComputer < handle
             D2 = obj.geometricalData.D2;
             
             mat = [
-                %Young M.        Section A.                  Density    Inertia
                 75000000000,    pi*(D1/2)^2-pi*(d1/2)^2,    3350,      pi/32*(D1^4-d1^4);%mat(1)
                 147000000000,                pi*(D2/2)^2,     950,      pi/32*D2^4       %mat(2)
                 ];
