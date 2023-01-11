@@ -40,11 +40,11 @@ classdef TrussStructure < handle
 
     methods (Access = private)
         function init(obj, cParams)
-            obj.parameters = cParams.parameters;
+            obj.parameters      = cParams.parameters;
             obj.geometricalData = cParams.geometricalData;
-            obj.mesh = cParams.mesh;
-            obj.materialData = cParams.materialData;
-            obj.fixNod = cParams.fixNod;
+            obj.mesh            = cParams.mesh;
+            obj.materialData    = cParams.materialData;
+            obj.fixNod          = cParams.fixNod;
             obj.dimensionalData = cParams.dimensionalData;
         end
 

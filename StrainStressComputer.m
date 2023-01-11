@@ -29,8 +29,8 @@ classdef StrainStressComputer < handle
         end
 
         function postprocessData = compute(obj)
-            eps=zeros(obj.n_el,1);
-            sig=zeros(obj.n_el,1);
+            eps = zeros(obj.n_el,1);
+            sig = zeros(obj.n_el,1);
             for iElem = 1:obj.n_el              
                 obj.computeCoord(iElem)
                 obj.computeLength();
@@ -48,17 +48,17 @@ classdef StrainStressComputer < handle
     methods (Access = private)
 
         function init(obj, cParams)
-            obj.n_d = cParams.n_d;
-            obj.n_i = cParams.n_i;
-            obj.n_nod = cParams.n_nod;
-            obj.n_el = cParams.n_el;
-            obj.n_el_dof = cParams.n_el_dof;
-            obj.u = cParams.u;
-            obj.Td = cParams.Td;
-            obj.x = cParams.mesh.coor;
-            obj.Tn = cParams.mesh.nodalConnec;
-            obj.mat = cParams.mData.matProp;
-            obj.Tmat = cParams.mData.matConnec;
+            obj.n_d         = cParams.n_d;
+            obj.n_i         = cParams.n_i;
+            obj.n_nod       = cParams.n_nod;
+            obj.n_el        = cParams.n_el;
+            obj.n_el_dof    = cParams.n_el_dof;
+            obj.u           = cParams.u;
+            obj.Td          = cParams.Td;
+            obj.x           = cParams.mesh.coor;
+            obj.Tn          = cParams.mesh.nodalConnec;
+            obj.mat         = cParams.mData.matProp;
+            obj.Tmat        = cParams.mData.matConnec;
         end
 
         function computeCoord(obj, iElem)
@@ -93,12 +93,12 @@ classdef StrainStressComputer < handle
         end
 
         function computeElementStainStress(obj, iElem)
-            E=obj.mat(obj.Tmat(iElem),1);
-            Re = obj.computeRotationMatrix;
+            E   = obj.mat(obj.Tmat(iElem),1);
+            Re  = obj.computeRotationMatrix;
             u_e = zeros(obj.n_el_dof,1);
             for i = 1:obj.n_el_dof
                 I = obj.Td(iElem,i);
-                u_e(i)=obj.u(I);
+                u_e(i) = obj.u(I);
             end
             u_p             =   Re*u_e;
             obj.epsElem     =   (1/obj.l_el)*[-1 1]*u_p;
