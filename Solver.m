@@ -11,7 +11,7 @@ classdef Solver < handle
         end
     end
     
-    methods (Static)
+    methods (Access = public, Static)
         function solver = create(cParams)
             switch cParams.type
                 case 'Direct'
@@ -30,7 +30,7 @@ classdef Solver < handle
     end
     
     
-    methods (Abstract)
+    methods (Access = public, Abstract)
         solveSystem();
     end
     
