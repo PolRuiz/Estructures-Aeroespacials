@@ -17,31 +17,30 @@ classdef DataCreator < handle
             obj.computeMesh();
             obj.computeMaterial();
             obj.createFixNodes();
-            obj.createDimensions();
-            
-            s.parameters = obj.parameters;
-            s.geometricalData = obj.geometricalData;
-            s.mesh = obj.mesh;
-            s.materialData = obj.materialData;
-            s.fixNod = obj.fixNod;
-            s.dimensionalData = obj.dimensionalData;
-            problemData = s;
+            obj.createDimensions();            
+            s.parameters        = obj.parameters;
+            s.geometricalData   = obj.geometricalData;
+            s.mesh              = obj.mesh;
+            s.materialData      = obj.materialData;
+            s.fixNod            = obj.fixNod;
+            s.dimensionalData   = obj.dimensionalData;
+            problemData         = s;
         end
     end
     
     methods (Access = private)
         function inputProblemParameters(obj)
-            s.hangingMass = 150; %kg
-            s.aeroMultiplier = 1;
-            obj.parameters = s;
+            s.hangingMass       = 150;
+            s.aeroMultiplier    = 1;
+            obj.parameters      = s;
         end
         function createGeometry(obj)
-            geo.H = 0.9;
-            geo.W = 0.85;
-            geo.B = 3.2;
-            geo.D1 = 18/1000;
-            geo.d1 = 7.5/1000;
-            geo.D2 = 3/1000;
+            geo.H   = 0.9;
+            geo.W   = 0.85;
+            geo.B   = 3.2;
+            geo.D1  = 18/1000;
+            geo.d1  = 7.5/1000;
+            geo.D2  = 3/1000;
             obj.geometricalData = geo;
         end
 
@@ -62,17 +61,15 @@ classdef DataCreator < handle
         end
         
         function createDimensions(obj)
-            dim.n_d = size(obj.mesh.coor,2);              % Number of dimensions
-            dim.n_i = dim.n_d;                                          % Number of DOFs for each node
-            dim.n = size(obj.mesh.coor,1);                % Total number of nodes
-            dim.n_dof = dim.n_i*dim.n;                                      % Total number of degrees of freedom
-            dim.n_el = size(obj.mesh.nodalConnec,1);      % Total number of elements
-            dim.n_nod = size(obj.mesh.nodalConnec,2);     % Number of nodes for each element
-            dim.n_el_dof = dim.n_i*dim.n_nod;                               % Number of DOFs for each element
+            dim.n_d             = size(obj.mesh.coor,2);              
+            dim.n_i             = dim.n_d;                                          
+            dim.n               = size(obj.mesh.coor,1);                
+            dim.n_dof           = dim.n_i*dim.n;                                      
+            dim.n_el            = size(obj.mesh.nodalConnec,1);      
+            dim.n_nod           = size(obj.mesh.nodalConnec,2);     
+            dim.n_el_dof        = dim.n_i*dim.n_nod;                              
             obj.dimensionalData = dim;
         end
-        
-        
     end
 end
 
